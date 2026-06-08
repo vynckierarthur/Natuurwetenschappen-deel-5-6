@@ -1,0 +1,558 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--orange:#D85A30;--orange-light:#FAECE7;--orange-mid:#F0997B;--green:#1D9E75;--green-light:#E1F5EE;--teal:#0F6E56;--blue:#185FA5;--blue-light:#E6F1FB;--purple:#534AB7;--purple-light:#EEEDFE}
+body{font-family:var(--font-sans,'Segoe UI',sans-serif)}
+.app{padding:0 0 2rem}
+.header{background:var(--orange);padding:1.5rem 1.5rem 1rem;color:#fff}
+.header h1{font-size:22px;font-weight:500;margin-bottom:4px}
+.header p{font-size:14px;opacity:.85}
+.tabs{display:flex;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);overflow-x:auto;gap:0}
+.tab{padding:12px 18px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--color-text-secondary);border-bottom:2.5px solid transparent;white-space:nowrap;flex-shrink:0}
+.tab.active{color:var(--orange);border-bottom-color:var(--orange)}
+.tab:hover:not(.active){color:var(--color-text-primary);background:var(--color-background-secondary)}
+.content{padding:1.25rem 1.5rem}
+.section{display:none}
+.section.active{display:block}
+.thema-tabs{display:flex;gap:8px;margin-bottom:1.25rem}
+.thema-btn{padding:6px 14px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:none;font-size:13px;cursor:pointer;color:var(--color-text-secondary)}
+.thema-btn.active{background:var(--orange);color:#fff;border-color:var(--orange)}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:12px}
+.card h2{font-size:15px;font-weight:500;margin-bottom:8px;color:var(--color-text-primary)}
+.card h3{font-size:13px;font-weight:500;color:var(--color-text-secondary);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.5px}
+.card p,.card li{font-size:14px;color:var(--color-text-secondary);line-height:1.6}
+.card ul{padding-left:1.1rem}
+.tag{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:500;margin-right:4px}
+.tag-oranje{background:#FAECE7;color:#993C1D}
+.tag-groen{background:#E1F5EE;color:#0F6E56}
+.tag-blauw{background:#E6F1FB;color:#185FA5}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:var(--color-background-secondary);font-weight:500;text-align:left;padding:8px 10px;border-bottom:0.5px solid var(--color-border-secondary)}
+td{padding:7px 10px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.quiz-q{font-size:15px;font-weight:500;margin-bottom:12px;color:var(--color-text-primary)}
+.quiz-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);margin-bottom:8px;cursor:pointer;font-size:14px;color:var(--color-text-primary);transition:background .15s}
+.quiz-opt:hover{background:var(--color-background-secondary)}
+.quiz-opt.correct{background:#E1F5EE;border-color:#1D9E75;color:#0F6E56}
+.quiz-opt.wrong{background:#FCEBEB;border-color:#E24B4A;color:#A32D2D}
+.quiz-opt input{pointer-events:none}
+.btn{padding:9px 20px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:none;cursor:pointer;font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.btn:hover{background:var(--color-background-secondary)}
+.btn-primary{background:var(--orange);color:#fff;border-color:var(--orange)}
+.btn-primary:hover{background:#993C1D;border-color:#993C1D}
+.score-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:500;background:var(--green-light);color:var(--teal);margin-bottom:12px}
+.progress{height:6px;background:var(--color-background-secondary);border-radius:3px;margin-bottom:16px;overflow:hidden}
+.progress-bar{height:100%;background:var(--orange);border-radius:3px;transition:width .3s}
+.kw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.kw-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);min-height:60px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:13px;font-weight:500;transition:all .2s;position:relative}
+.kw-card:hover{background:var(--color-background-primary);border-color:var(--orange)}
+.kw-card.flipped{background:var(--orange-light);border-color:var(--orange)}
+.kw-front{color:var(--color-text-primary)}
+.kw-back{display:none;color:#993C1D;font-size:12px;font-weight:400;text-align:center}
+.kw-card.flipped .kw-front{display:none}
+.kw-card.flipped .kw-back{display:block}
+.mindmap-wrap{overflow-x:auto}
+.mm-center{display:flex;flex-direction:column;align-items:center}
+.mm-box{padding:8px 16px;border-radius:var(--border-radius-md);font-size:13px;font-weight:500;text-align:center}
+.mm-center-box{background:var(--orange);color:#fff;font-size:15px;padding:12px 24px;border-radius:var(--border-radius-lg);margin-bottom:16px}
+.mm-branches{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;width:100%}
+.mm-branch{border:1.5px solid var(--orange-mid);border-radius:var(--border-radius-lg);padding:10px 12px;background:var(--orange-light)}
+.mm-branch h3{font-size:12px;font-weight:500;color:#993C1D;margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px}
+.mm-branch ul{list-style:none;padding:0}
+.mm-branch li{font-size:12px;color:#D85A30;padding:2px 0;border-bottom:0.5px solid #F5C4B3}
+.mm-branch li:last-child{border-bottom:none}
+.mm-green .mm-branch{border-color:#5DCAA5;background:var(--green-light)}
+.mm-green .mm-branch h3{color:#0F6E56}
+.mm-green .mm-branch li{color:#1D9E75;border-bottom-color:#9FE1CB}
+.mm-green .mm-center-box{background:var(--green)}
+.cross-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(30px,1fr));gap:2px;width:100%}
+.cross-cell{height:32px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;border-radius:4px;border:0.5px solid var(--color-border-tertiary)}
+.cross-cell.black{background:var(--color-text-primary);border-color:transparent}
+.cross-cell.white{background:var(--color-background-primary);cursor:text}
+.cross-cell.numbered{position:relative}
+.cross-cell .num{position:absolute;top:1px;left:2px;font-size:8px;color:var(--color-text-secondary);line-height:1}
+.cross-cell input{width:100%;height:100%;border:none;background:none;text-align:center;font-size:14px;font-weight:500;text-transform:uppercase;color:var(--color-text-primary);padding:0}
+.cross-cell input:focus{outline:none;background:var(--blue-light)}
+.clues{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.clue-group h3{font-size:13px;font-weight:500;margin-bottom:6px;color:var(--color-text-primary)}
+.clue-item{font-size:12px;color:var(--color-text-secondary);padding:3px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.clue-item span{font-weight:500;color:var(--color-text-primary);margin-right:4px}
+.feedback{padding:8px 12px;border-radius:var(--border-radius-md);font-size:13px;margin-top:8px;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:var(--green-light);color:var(--teal)}
+.feedback.nope{background:#FCEBEB;color:#A32D2D}
+.nav-row{display:flex;gap:8px;margin-top:12px;align-items:center}
+.quiz-count{font-size:12px;color:var(--color-text-secondary)}
+</style>
+
+<div class="app">
+<div class="header">
+  <h1>Biologie — Thema 5 &amp; 6</h1>
+  <p>Samenvattingen · Oefeningen · Kruiswoordraadsel · Mindmaps · Flashcards</p>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('samenvatting')"><i class="ti ti-book-2" aria-hidden="true"></i> Samenvatting</button>
+  <button class="tab" onclick="showTab('flashcards')"><i class="ti ti-cards" aria-hidden="true"></i> Flashcards</button>
+  <button class="tab" onclick="showTab('oefeningen')"><i class="ti ti-checkbox" aria-hidden="true"></i> Oefeningen</button>
+  <button class="tab" onclick="showTab('mindmap')"><i class="ti ti-sitemap" aria-hidden="true"></i> Mindmap</button>
+  <button class="tab" onclick="showTab('kruiswoord')"><i class="ti ti-grid-3x3" aria-hidden="true"></i> Kruiswoord</button>
+</div>
+
+<div class="content">
+
+<!-- SAMENVATTING -->
+<div class="section active" id="sec-samenvatting">
+  <div class="thema-tabs">
+    <button class="thema-btn active" onclick="showThema('sam',1,this)">Thema 5 — Spijsvertering</button>
+    <button class="thema-btn" onclick="showThema('sam',2,this)">Thema 6 — Ademhaling</button>
+  </div>
+  <div id="sam-1">
+    <div class="card">
+      <h2>Hoofdstuk 1 — De spijsvertering</h2>
+      <h3>Begrippen</h3>
+      <p><strong style="color:var(--color-text-primary)">Voedingsmiddel</strong> = wat je eet (brood, melk …). Bestaat uit <strong style="color:var(--color-text-primary)">voedingsstoffen</strong>: koolhydraten, eiwitten, vetten, water, vitaminen, mineralen.</p>
+      <p style="margin-top:6px"><strong style="color:var(--color-text-primary)">Vertering</strong> = het verkleinen van voedingsstoffen <em>met behulp van enzymen</em> in spijsverteringssappen, zodat ze in het bloed opgenomen kunnen worden.</p>
+    </div>
+    <div class="card">
+      <h2>Traject door het spijsverteringskanaal</h2>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>Orgaan</th><th>Sap / stof</th><th>Functie</th></tr></thead>
+        <tbody>
+          <tr><td>Mondholte</td><td>Speeksel</td><td>Zetmeel → glucose (enzymen)</td></tr>
+          <tr><td>Keel / Slokdarm</td><td>—</td><td>Transport via peristaltiek</td></tr>
+          <tr><td>Maag</td><td>Maagsap</td><td>Eiwitten → aminozuren</td></tr>
+          <tr><td>Twaalfvingerige darm</td><td>Alvleessap + Gal</td><td>Verder verteren zetmeel &amp; eiwitten; vetten verkleinen</td></tr>
+          <tr><td>Dunne darm</td><td>Darmsap</td><td>Vertering voltooien; absorptie in bloed</td></tr>
+          <tr><td>Dikke darm + endeldarm</td><td>—</td><td>Water opnemen; stoelgang via anus</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Aanpassingen dunne darm</h2>
+      <ul>
+        <li>Microscopisch kleine <strong style="color:var(--color-text-primary)">gaatjes</strong> in de binnenwand</li>
+        <li>Heel groot oppervlak door <strong style="color:var(--color-text-primary)">darmplooien</strong> en <strong style="color:var(--color-text-primary)">darmvlokken</strong> (≈ 200 m²) → absorptie sneller</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Hoofdstuk 2 — Gezonde voeding</h2>
+      <h3>BBB — functies van voedsel</h3>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>Functie</th><th>Voedingsstoffen</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag tag-oranje">Brandstof</span></td><td>Koolhydraten (zetmeel, suikers), vetten</td></tr>
+          <tr><td><span class="tag tag-groen">Bouwstof</span></td><td>Eiwitten, vetten, mineralen, water</td></tr>
+          <tr><td><span class="tag tag-blauw">Beschermstof</span></td><td>Eiwitten, vitaminen, mineralen, water</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <h3>Voedingsvezels</h3>
+      <p>Alleen in plantaardig voedsel. Leveren geen stoffen aan cellen, maar stimuleren de darmspieren en zorgen voor vlotte stoelgang.</p>
+      <h3>Voedingsdriehoek &amp; bewegingsdriehoek</h3>
+      <p>Drink veel water. Eet meer plantaardige dan dierlijke voedingsmiddelen. Beperk rood vlees en vetten. Beweeg dagelijks en beperk stilzitten.</p>
+    </div>
+  </div>
+  <div id="sam-2" style="display:none">
+    <div class="card">
+      <h2>Hoofdstuk 1 — Waar haalt je lichaam zuurstof vandaan?</h2>
+      <h3>Ingeademd vs. uitgeademd</h3>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>Ingeademd</th><th>Uitgeademd</th></tr></thead>
+        <tbody>
+          <tr><td>Zuurstofgas (O₂)</td><td>Meer</td><td>Minder</td></tr>
+          <tr><td>CO₂</td><td>Minder</td><td>Meer</td></tr>
+          <tr><td>Waterdamp</td><td>Minder</td><td>Meer</td></tr>
+          <tr><td>Temperatuur</td><td>Lager</td><td>Hoger</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Traject van de lucht</h2>
+      <p style="font-size:13px;color:var(--color-text-secondary);line-height:2">
+        Neus/mond → Keelholte → Strottenhoofd → Luchtpijp → Luchtpijptakken → Longen (longtakken → longtakjes) → Longzakjes → <strong style="color:var(--color-text-primary)">Longblaasjes</strong>
+      </p>
+      <h3>Aanpassingen neus</h3>
+      <ul>
+        <li>Trilharen &amp; slijm → lucht <strong style="color:var(--color-text-primary)">zuiveren</strong></li>
+        <li>Bloedvaten → lucht <strong style="color:var(--color-text-primary)">verwarmen</strong></li>
+        <li>Slijm → lucht <strong style="color:var(--color-text-primary)">bevochtigen</strong></li>
+      </ul>
+      <h3>Longblaasjes — aanpassingen</h3>
+      <ul>
+        <li>Heel dunne wand (1 laag cellen) → O₂ en CO₂ wisselen vlot</li>
+        <li>Miljoenen longblaasjes → heel groot uitwisselingsoppervlak (≈ 100 m²)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Celademhaling</h2>
+      <p style="font-size:14px;padding:8px 12px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);font-family:var(--font-mono,monospace)">
+        glucose + zuurstofgas → water + koolstofdioxide + energie
+      </p>
+      <p style="margin-top:8px">Dit is een <strong style="color:var(--color-text-primary)">trage verbranding</strong>. Energie komt langzaam vrij in de mitochondriën.</p>
+    </div>
+    <div class="card">
+      <h2>Hoofdstuk 2 — Gezonde levensstijl voor je longen</h2>
+      <h3>Vitale capaciteit</h3>
+      <p>Grootste hoeveelheid lucht die je na extra diep inademen kunt uitademen. Afhankelijk van: leeftijd, geslacht, lichaamsbouw, lichaamsconditie.</p>
+      <h3>Ongezond voor je longen</h3>
+      <ul>
+        <li>Roken &amp; vapen: giftige stoffen, ontstekingen, vernauwing luchtwegen, risico op kanker</li>
+        <li>Luchtvervuiling: fijn stof, ozon, stikstofdioxide → longziekten</li>
+        <li>Longziekten: acute bronchitis, astma, muco (mucoviscidose)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- FLASHCARDS -->
+<div class="section" id="sec-flashcards">
+  <div class="thema-tabs">
+    <button class="thema-btn active" onclick="showThema('fc',1,this)">Thema 5</button>
+    <button class="thema-btn" onclick="showThema('fc',2,this)">Thema 6</button>
+  </div>
+  <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px">Klik op een kaartje om het antwoord te zien.</p>
+  <div id="fc-1" class="kw-grid"></div>
+  <div id="fc-2" class="kw-grid" style="display:none"></div>
+</div>
+
+<!-- OEFENINGEN -->
+<div class="section" id="sec-oefeningen">
+  <div class="thema-tabs">
+    <button class="thema-btn active" onclick="showThema('quiz',1,this)">Thema 5</button>
+    <button class="thema-btn" onclick="showThema('quiz',2,this)">Thema 6</button>
+  </div>
+  <div id="quiz-1"></div>
+  <div id="quiz-2" style="display:none"></div>
+</div>
+
+<!-- MINDMAP -->
+<div class="section" id="sec-mindmap">
+  <div class="thema-tabs">
+    <button class="thema-btn active" onclick="showThema('mm',1,this)">Thema 5</button>
+    <button class="thema-btn" onclick="showThema('mm',2,this)">Thema 6</button>
+  </div>
+  <div id="mm-1">
+    <div class="mm-center">
+      <div class="mm-center-box">Het spijsverteringsstelsel</div>
+      <div class="mm-branches">
+        <div class="mm-branch">
+          <h3>Organen</h3>
+          <ul>
+            <li>Mondholte</li><li>Slokdarm</li><li>Maag</li><li>Dunne darm</li><li>Dikke darm</li><li>Endeldarm</li>
+          </ul>
+        </div>
+        <div class="mm-branch">
+          <h3>Sappen &amp; enzymen</h3>
+          <ul>
+            <li>Speeksel (zetmeel)</li><li>Maagsap (eiwitten)</li><li>Alvleessap</li><li>Gal (vetten)</li><li>Darmsap</li>
+          </ul>
+        </div>
+        <div class="mm-branch">
+          <h3>Stofomzettingen</h3>
+          <ul>
+            <li>Zetmeel → glucose</li><li>Eiwitten → aminozuren</li><li>Vetten → kleiner</li>
+          </ul>
+        </div>
+        <div class="mm-branch">
+          <h3>Aanpassingen</h3>
+          <ul>
+            <li>Peristaltiek</li><li>Darmvlokken</li><li>Darmplooien</li><li>Gaatjes wand</li>
+          </ul>
+        </div>
+        <div class="mm-branch">
+          <h3>Gezonde voeding (BBB)</h3>
+          <ul>
+            <li>Brandstof</li><li>Bouwstof</li><li>Beschermstof</li><li>Voedingsvezels</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="mm-2" style="display:none">
+    <div class="mm-center mm-green">
+      <div class="mm-center-box">Het ademhalingsstelsel</div>
+      <div class="mm-branches">
+        <div class="mm-branch">
+          <h3>Organen (macr.)</h3>
+          <ul>
+            <li>Neus / mond</li><li>Keel</li><li>Luchtpijp</li><li>Longen</li><li>Longtakken/-takjes</li>
+          </ul>
+        </div>
+        <div class="mm-branch">
+          <h3>Organen (micr.)</h3>
+          <ul>
+            <li>Longzakjes</li><li>Longblaasjes</li><li>Longhaarvaten</li>
+          </ul>
+        </div>
+        <div class="mm-branch">
+          <h3>Gasuitwisseling</h3>
+          <ul>
+            <li>O₂ in bloed</li><li>CO₂ uit bloed</li><li>Dunne wand</li><li>Groot oppervlak</li>
+          </ul>
+        </div>
+        <div class="mm-branch">
+          <h3>Celademhaling</h3>
+          <ul>
+            <li>Glucose + O₂</li><li>→ H₂O + CO₂</li><li>+ energie</li><li>In mitochondriën</li>
+          </ul>
+        </div>
+        <div class="mm-branch">
+          <h3>Gezonde longen</h3>
+          <ul>
+            <li>Niet roken/vapen</li><li>Sporten</li><li>Vitale capaciteit</li><li>Luchtkwaliteit</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- KRUISWOORDRAADSEL -->
+<div class="section" id="sec-kruiswoord">
+  <div class="thema-tabs">
+    <button class="thema-btn active" onclick="showThema('kw',1,this)">Thema 5</button>
+    <button class="thema-btn" onclick="showThema('kw',2,this)">Thema 6</button>
+  </div>
+  <div id="kw-1">
+    <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:10px">Vul het kruiswoordraadsel in. Druk daarna op "Controleer".</p>
+    <div id="kw1-grid" style="display:inline-grid;gap:2px"></div>
+    <div class="clues" id="kw1-clues"></div>
+    <div class="nav-row">
+      <button class="btn btn-primary" onclick="checkCross(1)">Controleer</button>
+      <button class="btn" onclick="resetCross(1)">Opnieuw</button>
+    </div>
+    <div class="feedback" id="kw1-fb"></div>
+  </div>
+  <div id="kw-2" style="display:none">
+    <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:10px">Vul het kruiswoordraadsel in. Druk daarna op "Controleer".</p>
+    <div id="kw2-grid" style="display:inline-grid;gap:2px"></div>
+    <div class="clues" id="kw2-clues"></div>
+    <div class="nav-row">
+      <button class="btn btn-primary" onclick="checkCross(2)">Controleer</button>
+      <button class="btn" onclick="resetCross(2)">Opnieuw</button>
+    </div>
+    <div class="feedback" id="kw2-fb"></div>
+  </div>
+</div>
+
+</div>
+</div>
+
+<script>
+function showTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  event.target.closest('.tab').classList.add('active');
+  document.getElementById('sec-'+name).classList.add('active');
+}
+function showThema(prefix,num,btn){
+  btn.closest('.thema-tabs').querySelectorAll('.thema-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const parent=btn.closest('.section')||btn.closest('.content');
+  [1,2].forEach(n=>{
+    const el=document.getElementById(prefix+'-'+n);
+    if(el)el.style.display=n===num?'':'none';
+  });
+}
+
+const flashT5=[
+  {v:'Vertering',a:'Het verkleinen van voedingsstoffen met enzymen in spijsverteringssappen'},
+  {v:'Enzym',a:'Stof die stofomzetting mogelijk maakt en versnelt'},
+  {v:'Peristaltiek',a:'Knijpende beweging van spieren in de wand van het spijsverteringskanaal'},
+  {v:'Speeksel',a:'Spijsverteringssap in de mondholte — verteert zetmeel'},
+  {v:'Maagsap',a:'Spijsverteringssap in de maag — verteert eiwitten'},
+  {v:'Gal',a:'Afkomstig van de lever — verdeelt grote vetdruppels in kleine'},
+  {v:'Alvleessap',a:'Afkomstig van alvleesklier — verteert zetmeel, eiwitten én vetten'},
+  {v:'Absorptie',a:'Opname van kleine voedingsstoffen door het bloed via de darmwand'},
+  {v:'Darmvlok',a:'Uitstulping van de binnenwand van de dunne darm — vergroot oppervlak'},
+  {v:'Aminozuur',a:'Kleinste deeltje na vertering van eiwitten'},
+  {v:'Voedingsvezel',a:'Onverteerbare stof uit plantaardig voedsel — stimuleert darmspieren'},
+  {v:'Brandstof',a:'Functie van koolhydraten en vetten: energie leveren'},
+  {v:'Bouwstof',a:'Functie van eiwitten: nieuwe cellen bouwen'},
+  {v:'Beschermstof',a:'Functie van vitaminen: beschermen tegen ziekteverwekkers'},
+  {v:'Voedingswaarde',a:'Hoeveel energie en voedingsstoffen 100 g van een product levert'},
+];
+const flashT6=[
+  {v:'Gasuitwisseling',a:'Uitwisseling van O₂ en CO₂ ter hoogte van de longblaasjes'},
+  {v:'Celademhaling',a:'Trage verbranding: glucose + O₂ → water + CO₂ + energie'},
+  {v:'Longblaasje',a:'Microscopisch klein blaasje aan het einde van een longtakje'},
+  {v:'Longhaarvat',a:'Kleinste bloedvaatje rond de longblaasjes — gasuitwisseling'},
+  {v:'Vitale capaciteit',a:'Grootste hoeveelheid lucht na extra diep inademen'},
+  {v:'Ademvolume',a:'Hoeveelheid lucht die ververst wordt bij rustig ademhalen'},
+  {v:'Stofuitwisseling',a:'Uitwisseling van stoffen tussen bloed en weefsels/omgeving'},
+  {v:'Trilharen',a:'Beweegbare haartjes in luchtpijp — duwen slijmpropjes omhoog'},
+  {v:'Strottenhoofd',a:'Orgaan met stembanden tussen keel en luchtpijp'},
+  {v:'Kraakbeenring',a:'Houdt de luchtpijp altijd open'},
+  {v:'Astma',a:'Chronische ontsteking van de luchtwegen'},
+  {v:'Mucoviscidose (muco)',a:'Erfelijke longziekte — taaislijmvliesziekte'},
+  {v:'Spirometer',a:'Meetinstrument voor ademvolume en vitale capaciteit'},
+  {v:'CO₂',a:'Gas dat in grotere hoeveelheid in uitgeademde lucht zit'},
+  {v:'Mitochondrion',a:'Celorganel waar de celademhaling plaatsvindt'},
+];
+
+function buildFlash(arr,id){
+  const c=document.getElementById(id);
+  if(!c||c.innerHTML)return;
+  arr.forEach(item=>{
+    const d=document.createElement('div');
+    d.className='kw-card';
+    d.innerHTML=`<span class="kw-front">${item.v}</span><span class="kw-back">${item.a}</span>`;
+    d.onclick=()=>d.classList.toggle('flipped');
+    c.appendChild(d);
+  });
+}
+buildFlash(flashT5,'fc-1');
+buildFlash(flashT6,'fc-2');
+
+const quizT5=[
+  {q:'Wat is het verschil tussen een voedingsmiddel en een voedingsstof?',opts:['Het is hetzelfde','Een voedingsmiddel is wat je eet; een voedingsstof zit in het voedingsmiddel','Een voedingsstof is wat je eet; een voedingsmiddel zit erin','Voedingsstoffen zijn altijd vloeibaar'],ans:1},
+  {q:'Welk enzym in speeksel zet zetmeel om?',opts:['Maagsap','Galzout','Amylase (enzym in speeksel)','Darmsap'],ans:2},
+  {q:'Wat is peristaltiek?',opts:['Absorptie van voedingsstoffen','Knijpende beweging van spieren in het spijsverteringskanaal','Productie van speeksel','Stofomzetting van vet'],ans:1},
+  {q:'Waar worden eiwitten afgebroken tot aminozuren?',opts:['Mondholte','Dikke darm','Maag','Lever'],ans:2},
+  {q:'Wat is de functie van gal?',opts:['Eiwitten verteren','Zetmeel omzetten','Grote vetdruppels verdelen in kleine druppeltjes','Water opnemen'],ans:2},
+  {q:'Welke voedingsstoffen zijn brandstoffen?',opts:['Vitaminen en mineralen','Eiwitten en water','Koolhydraten en vetten','Voedingsvezels'],ans:2},
+  {q:'Waarom is de binnenwand van de dunne darm aangepast met darmplooien?',opts:['Om vertering te starten','Om het oppervlak te vergroten zodat absorptie sneller gaat','Om water op te nemen','Om peristaltiek te remmen'],ans:1},
+  {q:'Wat toont de voedingsdriehoek?',opts:['Welke sporten je best doet','Welke voedingsmiddelen je meer, minder of zo weinig mogelijk eet','De hoeveelheid calorieën per product','De samenstelling van eiwitten'],ans:1},
+];
+const quizT6=[
+  {q:'Welk gas zit er meer in uitgeademde lucht?',opts:['Zuurstofgas','Koolstofdioxide','Waterstof','Stikstof'],ans:1},
+  {q:'Wat is celademhaling?',opts:['Lucht inademen via de longen','Trage verbranding: glucose + O₂ → water + CO₂ + energie','Gasuitwisseling in de longblaasjes','Uitscheiden van CO₂ via de neus'],ans:1},
+  {q:'Waarvoor dienen de kraakbeenringen in de luchtpijp?',opts:['Lucht verwarmen','Luchtpijp altijd opengehouden','Slijm produceren','Koolstofdioxide filteren'],ans:1},
+  {q:'Welke aanpassing van de longblaasjes zorgt voor snelle gasuitwisseling?',opts:['Dikke wanden','Heel dunne wand (1 laag cellen)','Aanwezigheid van enzymen','Kraakbeenringen'],ans:1},
+  {q:'Wat is de vitale capaciteit?',opts:['Hoeveelheid lucht bij rustig ademen','Maximale hoeveelheid lucht na extra diep inademen','Minimale longinhoud','Restvolume na uitademen'],ans:1},
+  {q:'Welk orgaan houdt de luchtpijp open?',opts:['Strotklep','Middenrif','Kraakbeenringen','Strottenhoofd'],ans:2},
+  {q:'Wat is een gevolg van roken op het ademhalingsstelsel?',opts:['Groter ademvolume','Vernauwing van de luchtwegen en risico op longkanker','Grotere longblaasjes','Meer zuurstofopname'],ans:1},
+  {q:'Waar vindt gasuitwisseling plaats?',opts:['In de luchtpijp','In de keelholte','Ter hoogte van de longblaasjes','In het strottenhoofd'],ans:2},
+];
+
+let quizState={1:{idx:0,score:0,answered:false},2:{idx:0,score:0,answered:false}};
+function buildQuiz(arr,id,thema){
+  const c=document.getElementById(id);
+  if(!c||c.innerHTML)return;
+  renderQ(arr,id,thema);
+}
+function renderQ(arr,id,thema){
+  const s=quizState[thema];
+  const c=document.getElementById(id);
+  c.innerHTML='';
+  if(s.idx>=arr.length){
+    c.innerHTML=`<div class="card"><div class="score-badge"><i class="ti ti-trophy" aria-hidden="true"></i> Score: ${s.score} / ${arr.length}</div><p style="font-size:14px;color:var(--color-text-secondary)">Je hebt alle vragen beantwoord!</p><div class="nav-row"><button class="btn btn-primary" onclick="restartQuiz(${thema})">Opnieuw starten</button></div></div>`;
+    return;
+  }
+  const q=arr[s.idx];
+  const pct=Math.round((s.idx/arr.length)*100);
+  c.innerHTML=`<div class="progress"><div class="progress-bar" style="width:${pct}%"></div></div><p class="quiz-count" style="margin-bottom:8px">Vraag ${s.idx+1} van ${arr.length} &nbsp;·&nbsp; Score: ${s.score}</p><p class="quiz-q">${q.q}</p>`+
+  q.opts.map((o,i)=>`<label class="quiz-opt" id="qo-${i}"><input type="radio" name="qopt" value="${i}"> ${o}</label>`).join('')+
+  `<div class="nav-row"><button class="btn btn-primary" onclick="checkQ(${JSON.stringify(arr).length>0?thema:thema},${thema})" style="display:none" id="nextbtn-${thema}">Volgende →</button></div>`;
+  c.querySelectorAll('.quiz-opt').forEach((el,i)=>{
+    el.addEventListener('click',()=>{
+      if(s.answered)return;
+      s.answered=true;
+      const correct=i===q.ans;
+      el.classList.add(correct?'correct':'wrong');
+      if(!correct)c.querySelector('#qo-'+q.ans).classList.add('correct');
+      if(correct)s.score++;
+      document.getElementById('nextbtn-'+thema).style.display='inline-flex';
+    });
+  });
+}
+window.checkQ=function(x,thema){
+  const arr=thema===1?quizT5:quizT6;
+  quizState[thema].idx++;
+  quizState[thema].answered=false;
+  renderQ(arr,'quiz-'+thema,thema);
+};
+window.restartQuiz=function(thema){
+  quizState[thema]={idx:0,score:0,answered:false};
+  const arr=thema===1?quizT5:quizT6;
+  renderQ(arr,'quiz-'+thema,thema);
+};
+buildQuiz(quizT5,'quiz-1',1);
+buildQuiz(quizT6,'quiz-2',2);
+
+const cross1={
+  cols:12,rows:8,
+  words:[
+    {word:'VERTERING',row:0,col:0,dir:'h',clue:'Het verkleinen van voedingsstoffen met enzymen'},
+    {word:'ENZYM',row:0,col:0,dir:'v',clue:'Stof die stofomzetting versnelt'},
+    {word:'SPEEKSEL',row:2,col:0,dir:'h',clue:'Spijsverteringssap in de mondholte'},
+    {word:'GAL',row:2,col:8,dir:'v',clue:'Verdeelt vetdruppels, afkomstig van lever'},
+    {word:'MAAGSAP',row:4,col:0,dir:'h',clue:'Sap dat eiwitten verteert'},
+    {word:'ABSORPTIE',row:6,col:0,dir:'h',clue:'Opname van voedingsstoffen door het bloed'},
+    {word:'AMINOZUUR',row:0,col:8,dir:'v',clue:'Kleinste deeltje na eiwit-vertering'},
+  ]
+};
+const cross2={
+  cols:12,rows:8,
+  words:[
+    {word:'LONGBLAASJE',row:0,col:0,dir:'h',clue:'Microscopisch blaasje — gasuitwisseling'},
+    {word:'LUCHTPIJP',row:2,col:0,dir:'h',clue:'Buis van strottenhoofd naar de longen'},
+    {word:'ASTMA',row:4,col:0,dir:'h',clue:'Chronische ontsteking van de luchtwegen'},
+    {word:'ADEMVOLUME',row:6,col:0,dir:'h',clue:'Hoeveelheid lucht bij rustige ademhaling'},
+    {word:'LONGTAK',row:0,col:0,dir:'v',clue:'Vertakking in de long'},
+    {word:'CELADEMHALING',row:0,col:4,dir:'v',clue:'Trage verbranding in de cel'},
+    {word:'SPIROMETER',row:0,col:8,dir:'v',clue:'Meetinstrument voor vitale capaciteit'},
+  ]
+};
+
+function buildCross(data,gridId,cluesId){
+  const grid=Array.from({length:data.rows},()=>Array(data.cols).fill(null));
+  data.words.forEach(w=>{
+    for(let i=0;i<w.word.length;i++){
+      const r=w.dir==='h'?w.row:w.row+i;
+      const c=w.dir==='h'?w.col+i:w.col;
+      if(r<data.rows&&c<data.cols)grid[r][c]=w.word[i];
+    }
+  });
+  const el=document.getElementById(gridId);
+  if(!el||el.children.length>0)return;
+  el.style.gridTemplateColumns=`repeat(${data.cols},32px)`;
+  for(let r=0;r<data.rows;r++){
+    for(let c=0;c<data.cols;c++){
+      const cell=document.createElement('div');
+      cell.className='cross-cell';
+      if(grid[r][c]===null){cell.classList.add('black');}
+      else{
+        cell.classList.add('white');
+        const inp=document.createElement('input');
+        inp.maxLength=1;inp.dataset.ans=grid[r][c];inp.dataset.r=r;inp.dataset.c=c;
+        inp.addEventListener('input',e=>{inp.value=inp.value.toUpperCase().slice(-1);});
+        cell.appendChild(inp);
+      }
+      el.appendChild(cell);
+    }
+  }
+  const cl=document.getElementById(cluesId);
+  if(!cl)return;
+  const h=data.words.filter(w=>w.dir==='h');
+  const v=data.words.filter(w=>w.dir==='v');
+  cl.innerHTML=`<div class="clue-group"><h3>Horizontaal</h3>${h.map((w,i)=>`<div class="clue-item"><span>${i+1}.</span>${w.clue}</div>`).join('')}</div><div class="clue-group"><h3>Verticaal</h3>${v.map((w,i)=>`<div class="clue-item"><span>${i+1}.</span>${w.clue}</div>`).join('')}</div>`;
+}
+window.checkCross=function(n){
+  const gid='kw'+n+'-grid', fid='kw'+n+'-fb';
+  const inputs=document.getElementById(gid).querySelectorAll('input');
+  let tot=0,cor=0;
+  inputs.forEach(inp=>{
+    tot++;
+    if(inp.value.toUpperCase()===inp.dataset.ans){cor++;inp.style.color='#1D9E75';}
+    else if(inp.value){inp.style.color='#E24B4A';}
+  });
+  const fb=document.getElementById(fid);
+  fb.className='feedback show '+(cor===tot?'ok':'nope');
+  fb.textContent=cor===tot?'Alle antwoorden correct! 🎉':`${cor} van de ${tot} vakjes correct.`;
+};
+window.resetCross=function(n){
+  document.getElementById('kw'+n+'-grid').querySelectorAll('input').forEach(i=>{i.value='';i.style.color='';});
+  const fb=document.getElementById('kw'+n+'-fb');
+  fb.className='feedback';fb.textContent='';
+};
+buildCross(cross1,'kw1-grid','kw1-clues');
+buildCross(cross2,'kw2-grid','kw2-clues');
+</script>
